@@ -27,3 +27,6 @@ def run(args, logging):
 
     build_data.write(args.build_id, 'instance', {'id': instance.id, 'public_ip_address': instance.public_ip_address})
     logging.info('Wrote instance information to build data file...')
+
+    logging.info('Sleeping for 30 seconds...')
+    time.sleep(30)
