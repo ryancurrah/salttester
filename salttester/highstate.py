@@ -1,9 +1,20 @@
+"""
+Highstate Test Runner
+"""
 from salttester import cmd, get_file
 
 
 def run(args, logging):
+    """
+    Runs the highstate test runner and downloads the test result
+
+    :param args: A NameSpace object with the arguments required
+    :param logging: A python logging object
+    :return: An exit code
+    """
     highstate_junit_file = '/tmp/highstate.xml'
-    args.cmd = 'sudo salt-call state.highstate --out=junit --out-file={0}'.format(highstate_junit_file)
+    args.cmd = 'sudo salt-call state.highstate --out=junit ' \
+               '--out-file={0}'.format(highstate_junit_file)
     args.remote_path = highstate_junit_file
     args.local_path = './highstate.xml'
 
