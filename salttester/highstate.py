@@ -8,6 +8,9 @@ def run(args, logging):
     """
     Runs the highstate test runner and downloads the test result
 
+    WARNING: Requires the custom junit outputter in your salt states dir
+    see https://github.com/ryancurrah/salt-ci-demo/blob/master/states/_output/junit.py
+
     :param args: A NameSpace object with the arguments required
     :param logging: A python logging object
     :return: An exit code
