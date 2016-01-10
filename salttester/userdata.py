@@ -22,7 +22,6 @@ runcmd:
  - pip install pytest
  - gem2.0 install serverspec
  - gem2.0 install yarjuf
- - touch /tmp/build-done
 '''
 
 OS = {'ubuntu': UBUNTU}
