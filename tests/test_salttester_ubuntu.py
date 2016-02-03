@@ -16,6 +16,7 @@ BUILD_ID = str(uuid1())
 DEPLOY_ARGS = ['-b', BUILD_ID, '-o', 'ubuntu', 'deploy', '--image-id', 'ami-d05e75b8',
                '--instance-type', 't2.micro', '--keyname', 'ryancurrah', '--git-repo',
                'https://github.com/ryancurrah/salt-ci-demo.git', '--git-branch', 'master',
+               '--salt-dir', '/srv/salt', '--minion-conf', '/srv/salt/tests/configs/minion',
                '--subnet-id', 'subnet-4be20161', '--security-group-ids', 'sg-370eab4e']
 
 GOOD_COMMAND_ARGS = ['-b', BUILD_ID, '-o', 'ubuntu', 'remote', '--port', '22', '--username',
@@ -90,10 +91,17 @@ def test_userdata():
     """
     Test that the userdata inputs are set
     """
-    ubuntu = salttester.userdata.OS['ubuntu'].format(git_repo='GIT_REPO', git_branch='GIT_BRANCH')
-    assert 'GIT_REPO' in ubuntu and 'GIT_BRANCH' in ubuntu
+    userdata = salttester.userdata.OS['ubuntu'].format(git_repo='GIT_REPO',
+                                                       git_branch='GIT_BRANCH',
+                                                       salt_dir='SALT_DIR',
+                                                       minion_conf='MINION_CONF')
+    assert 'GIT_REPO' in userdata and \
+           'GIT_BRANCH' in userdata and \
+           'SALT_DIR' in userdata and \
+           'MINION_CONF' in userdata
 
 
+# pylint: disable=W0613,W0621
 def test_deploy_ubuntu(ec2_instance):
     """
     Tests that there is an instance id and public ip
@@ -110,6 +118,7 @@ def test_deploy_ubuntu(ec2_instance):
     assert len(instances) > 0 and instances[0]['InstanceState']['Name'] == 'running'
 
 
+# pylint: disable=W0613,W0621
 def test_good_remote_cmd(ec2_instance):
     """
     Test that remote command execution works and proper result code returned
@@ -123,6 +132,7 @@ def test_good_remote_cmd(ec2_instance):
     assert len(stdout) > 0
 
 
+# pylint: disable=W0613,W0621
 def test_bad_remote_cmd(ec2_instance):
     """
     Tests that ec2 instance was deployed
@@ -137,6 +147,7 @@ def test_bad_remote_cmd(ec2_instance):
     assert len(stdout) > 0
 
 
+# pylint: disable=W0613,W0621
 def test_get_file_sftp(ec2_instance):
     """
     Test that remote file download works
@@ -151,6 +162,7 @@ def test_get_file_sftp(ec2_instance):
 
 
 @pytest.mark.run(order=1)
+# pylint: disable=W0613,W0621
 def test_pystest_tester(ec2_instance):
     """
     Test that pytest runs successfully and downloads a pytest.xml file
@@ -166,6 +178,7 @@ def test_pystest_tester(ec2_instance):
 
 
 @pytest.mark.run(order=2)
+# pylint: disable=W0613,W0621
 def test_highstate_tester(ec2_instance):
     """
     Test that highstate runs successfully and downloads a highstate.xml file
@@ -181,6 +194,7 @@ def test_highstate_tester(ec2_instance):
 
 
 @pytest.mark.run(order=3)
+# pylint: disable=W0613,W0621
 def test_serverspec_tester(ec2_instance):
     """
     Test that serverspec runs successfully and downloads a serverspec.xml file
