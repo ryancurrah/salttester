@@ -1,4 +1,7 @@
-salttester/*.pyc
+*.pyc
+*.db
+*.xml
+*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
