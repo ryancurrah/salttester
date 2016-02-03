@@ -27,7 +27,7 @@ BAD_COMMAND_ARGS = ['-b', BUILD_ID, '-o', 'ubuntu', 'remote', '--port', '22', '-
 
 GET_FILE_ARGS = ['-b', BUILD_ID, '-o', 'ubuntu', 'remote', '--port', '22', '--username', 'ubuntu',
                  '--key-filename', '/srv/test/test.pem', 'getfile', '--remote-path', '/etc/hosts',
-                 '--local-path', 'testfile.txt']
+                 '--local-path', 'testfile.testfile']
 
 PYTEST_ARGS = ['-b', BUILD_ID, '-o', 'ubuntu', 'remote', '--port', '22', '--username', 'ubuntu',
                '--key-filename', '/srv/test/test.pem', 'pytest', '--pytest-test-dir',
@@ -158,7 +158,7 @@ def test_get_file_sftp(ec2_instance):
     # pylint: disable=W0612
     exit_code, stdout, stderr = salttester.get_file.run(parser.parse_args(GET_FILE_ARGS), logging)
     assert exit_code == 0
-    assert os.path.isfile('testfile.txt')
+    assert os.path.isfile('testfile.testfile')
 
 
 @pytest.mark.run(order=1)
