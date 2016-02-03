@@ -33,7 +33,10 @@ def run(args, logging):
         SubnetId=args.subnet_id,
         KeyName=args.keyname,
         SecurityGroupIds=args.security_group_ids.split(','),
-        UserData=userdata.OS[args.os].format(git_repo=args.git_repo, git_branch=args.git_branch),
+        UserData=userdata.OS[args.os].format(git_branch=args.git_branch,
+                                             git_repo=args.git_repo,
+                                             minion_conf=args.minion_conf,
+                                             salt_dir=args.salt_dir),
         MinCount=1,
         MaxCount=1
     )[0]
