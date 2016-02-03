@@ -3,22 +3,45 @@ salt-tester
 
 Description
 -----------
+
 SaltStack Test Runner for Py.Test, Highstate and ServerSpec tests Using AWS EC2 and Jenkins with reports in jUnit.
 
-This app facilitates the following
-----------------------------------
+
+This app does the following
+---------------------------
 
 - Deploy an Amazon EC2 instance
-- Install Salt Minion in standalone mode
+- Install Salt Minion in standalone/masterless mode
 - Add Salt grains
-- Run py.test and save results as a jUnit report
-- Run Hightstate and save results as a jUnit report
-- Run ServerSpec and save results as a jUnit report
-- Upload jUnit report to Jenkins
+- Run Hightstate and save results as a jUnit report to /tmp/highstate.xml
+- Run py.test and save results as a jUnit report to /tmp/pytest.xml
+- Run ServerSpec and save results as a jUnit report to /tmp/serverspec.sml
+- Downloads jUnit reports into Jenkins job folder
 - Terminate an Amazon EC2 instance
 
-This app assumes
-----------------
-- Your running the app from a Linux Jenkins server with Boto3 installed
-- Your Amazon EC2 credential is stored in the running users ~/.aws/credentials file or Jenkins injected env variables (http://boto3.readthedocs.org/en/latest/guide/configuration.html#environment-variables) 
-- Your Amazon EC2 config is stored in the running users ~/.aws/config file (http://boto3.readthedocs.org/en/latest/guide/configuration.html#environment-variables)
+
+This app requires
+-----------------
+
+1. Your running the app from a Linux Jenkins server with this plugin installed
+2. Your Jenkins server has the jUnit plugin installed
+3. Your Amazon EC2 credential is injected by Jenkins as env variables (http://boto3.readthedocs.org/en/latest/guide/configuration.html#environment-variables) 
+4. You have a minion conf file that specifies the following (See example config below)
+    a. Set file_client to 'local'
+    b. Set up local file_roots and pillar_roots to your git repo clone directory
+5. A minion conf file to use for testing is located in your Salt repo in the tests dir (Eg: tests/configs/minion)
+6. Your ServerSpec spec_helper.rb file imports the yarjuf library to allow for jUnit output (https://github.com/natritmeyer/yarjuf)
+
+
+Example local/masterless minion config
+--------------------------------------
+
+```
+file_client: local
+file_roots:
+  base:
+    - /srv/salt/states
+pillar_roots:
+  base:
+    - /srv/salt/pillar
+```
