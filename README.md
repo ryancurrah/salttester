@@ -23,14 +23,15 @@ This app does the following
 This app requires
 -----------------
 
-1. Your running the app from a Linux Jenkins server with this plugin installed
-2. Your Jenkins server has the jUnit plugin installed
-3. Your Amazon EC2 credential is injected by Jenkins as env variables (http://boto3.readthedocs.org/en/latest/guide/configuration.html#environment-variables) 
-4. You have a minion conf file that specifies the following (See example config below)
+1. Running the salttester app from a Linux Jenkins server with this plugin installed
+2. Jenkins server has the jUnit plugin installed
+3. Amazon EC2 credential is injected by Jenkins as env variables (http://boto3.readthedocs.org/en/latest/guide/configuration.html#environment-variables) 
+4. Minion conf file that specifies the following (See example config below)
     a. Set file_client to 'local'
     b. Set up local file_roots and pillar_roots to your git repo clone directory
 5. A minion conf file to use for testing is located in your Salt repo in the tests dir (Eg: tests/configs/minion)
-6. Your ServerSpec spec_helper.rb file imports the yarjuf library to allow for jUnit output (https://github.com/natritmeyer/yarjuf)
+6. ServerSpec spec_helper.rb file imports the yarjuf library to allow for jUnit output (https://github.com/natritmeyer/yarjuf)
+7. Include a custom jUnit outputter in your salt states (https://github.com/ryancurrah/salt-ci-demo/blob/master/states/_output/junit.py) 
 
 
 Example local/masterless minion config

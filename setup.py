@@ -5,11 +5,11 @@ from setuptools import setup
 
 setup(
     name='salttester',
-    version='0.3',
+    version='0.1.0',
     packages=['salttester'],
     setup_requires=['pytest-runner'],
     install_requires=['argparse', 'boto3', 'paramiko'],
-    tests_require=['pytest', 'pytest-pylint'],
+    tests_require=['pytest', 'pytest-pylint', 'pytest-ordering'],
     url='www.currah.ca',
     license='Apache',
     author='Ryan Currah',
