@@ -74,10 +74,19 @@ def create_parser():
                                help='AWS EC2 SSH key name',
                                required=True)
     deploy_parser.add_argument('--git-repo',
-                               help='The url of the git repo to clone',
+                               help='The url of the Salt git repo to clone',
                                required=True)
     deploy_parser.add_argument('--git-branch',
-                               help='The name of the git branch to checkout',
+                               help='The name of the Salt git branch to checkout',
+                               required=True)
+    deploy_parser.add_argument('--salt-dir',
+                               help='The full path of the directory to clone the Salt git repo '
+                                    'to (Eg: /srv/salt)',
+                               required=True)
+    deploy_parser.add_argument('--minion-conf',
+                               help='The full path to the minion conf to use for testing. Hint: '
+                                    'This should usually be located in your Salt repo that was '
+                                    'cloned (Eg: tests/config/minion)',
                                required=True)
     deploy_parser.add_argument('--subnet-id',
                                help='AWS EC2 subnet ID for regions without a default VPC',
