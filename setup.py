@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='salttester',
-    version='0.3.0',
+    version='0.4.0',
     packages=['salttester'],
     setup_requires=['pytest-runner'],
     install_requires=['argparse', 'boto3', 'paramiko'],
