@@ -43,7 +43,7 @@ SERVERSPEC_ARGS = ['-b', BUILD_ID, '-o', 'ubuntu', 'remote', '--port', '22', '--
 TERMINATE_ARGS = ['-b', BUILD_ID, '-o', 'ubuntu', 'terminate']
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def ec2_instance(request):
     """
     ec2 instance deploy fixture used to run tests
