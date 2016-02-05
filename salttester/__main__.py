@@ -86,7 +86,7 @@ def create_parser():
     deploy_parser.add_argument('--minion-conf',
                                help='The full path to the minion conf to use for testing. Hint: '
                                     'This should usually be located in your Salt repo that was '
-                                    'cloned (Eg: tests/config/minion)',
+                                    'cloned (Eg: /srv/salt/tests/configs/minion)',
                                required=True)
     deploy_parser.add_argument('--subnet-id',
                                help='AWS EC2 subnet ID for regions without a default VPC',
