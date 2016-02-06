@@ -22,8 +22,8 @@ Salt-tester runs on the following operating systems
 1. Ubuntu
 
 
-Salt-tester does the following
-------------------------------
+Salt-tester allows you to do the following
+------------------------------------------
 
 - Deploy an Amazon EC2 instance
 - Install Salt Minion in standalone/masterless mode
