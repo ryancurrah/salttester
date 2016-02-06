@@ -5,7 +5,7 @@ salt-tester
 Description
 -----------
 
-SaltStack test executor for Amazon EC2 that has multiple test runners that report results back in jUnit
+SaltStack test executor for Amazon EC2 that has multiple test runners which report test results back in jUnit
 
 
 Salt-tester test runners
