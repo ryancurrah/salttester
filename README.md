@@ -61,8 +61,8 @@ Jenkins plugins required
 4. ShiningPanda Plugin
 
 
-Jenkins setup
--------------
+Jenkins job configuration
+-------------------------
 
 Source Code Management > Git > Repository URL
 
