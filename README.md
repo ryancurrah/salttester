@@ -34,8 +34,10 @@ Salt-tester allows you to do the following
 - Terminate Amazon EC2 instance
 
 
-Salt-tester requires some work in your Salt States repo
--------------------------------------------------------
+Salt-tester requires some changes to your Salt States repo
+----------------------------------------------------------
+*Example Salt states repo*
+https://github.com/ryancurrah/salt-ci-demo
 
 *Minion config for testing*
 - Minion conf file to use for testing is located in your Salt repo in a specified dir (Eg: tests/configs/minion)
@@ -62,52 +64,52 @@ Jenkins plugins required
 Jenkins setup
 -------------
 
-1. Source Code Management > Git > Repository URL
+Source Code Management > Git > Repository URL
 
 ```
 https://github.com/ryancurrah/salt-ci-demo.git
 ```
 
-2. Source Code Management > Git > Branches to build
+Source Code Management > Git > Branches to build
 
 ```
 */master
 ```
 
-3. Build Environment > Properties Content
+Build Environment > Properties Content
 
 ```
 SALTTESTER_VER=0.4.0
 AWS_DEFAULT_REGION=us-east-1
 ```
 
-4. Build Environment > Inject passwords to the build as environment variables 
+Build Environment > Inject passwords to the build as environment variables 
 
 ```
 AWS_ACCESS_KEY_ID=<access_key_id>
 AWS_SECRET_ACCESS_KEY=<secret_access_key>
 ```
 
-5. Build > Virtualenv builder > Python version
+Build > Virtualenv builder > Python version
 
 ```
 System-CPython2.7
 ```
 
-6. Build > Virtualenv builder > Nature
+Build > Virtualenv builder > Nature
 
 ```
 Shell
 ```
 
-7. Build > Virtualenv builder > Command
+Build > Virtualenv builder > Command
 
 ```
 # Install the salttester app
 pip install https://github.com/ryancurrah/salttester/blob/master/dist/salttester-$SALTTESTER_VER.tar.gz?raw=true
 # Start the instance deployment (synchronous)
 salttester -b $BUILD_ID -o ubuntu deploy --image-id ami-d05e75b8 --instance-type t2.micro --keyname tester --git-repo https://github.com/ryancurrah/salt-ci-demo.git --git-branch master --salt-dir /srv/salt --minion-conf /srv/salt/tests/configs/minion --subnet-id subnet-8u447f3 --security-group-ids sg-56b67u
-# Run command to set role grain
+# Run command to set grains
 salttester -b $BUILD_ID -o ubuntu remote --port 22 --username ubuntu --key-filename /var/jenkins_home/tester.pem cmd --cmd "sudo salt-call grains.setval app realcost"
 # Run py.test
 salttester -b $BUILD_ID -o ubuntu remote --port 22 --username ubuntu --key-filename /var/jenkins_home/tester.pem pytest --pytest-test-dir /srv/salt/tests/pytest
@@ -119,7 +121,7 @@ salttester -b $BUILD_ID -o ubuntu remote --port 22 --username ubuntu --key-filen
 salttester -b $BUILD_ID -o ubuntu terminate
 ```
 
-8. Post-build Actions > Publish JUnit test result report > Test report XMLs
+Post-build Actions > Publish JUnit test result report > Test report XMLs
 
 ```
 *.xml
@@ -165,9 +167,9 @@ caller = salt.client.Caller()
 
 
 def test_lowstate_render():
-    r = caller.cmd('state.show_lowstate')
-    assert isinstance(r, list)
-    assert len(r) > 0
+    s = caller.cmd('state.show_lowstate')
+    assert isinstance(s, list)
+    assert len(s) > 0
 ```
 
 
@@ -180,8 +182,7 @@ caller = salt.client.Caller()
 
 
 def test_pillar_render():
-    r = caller.cmd('pillar.items')
-    print r
-    assert isinstance(r, dict)
-    assert '_errors' not in r
+    p = caller.cmd('pillar.items')
+    assert isinstance(p, dict)
+    assert '_errors' not in p
 ```
