@@ -25,18 +25,17 @@ Salt-tester runs on the following operating systems
 Salt-tester allows you to do the following
 ------------------------------------------
 
-- Deploy an Amazon EC2 instance
+- Deploy Amazon EC2 instance
 - Install Salt Minion in standalone/masterless mode
-- Add Salt grains
-- Run Hightstate and save results as a jUnit report to /tmp/highstate.xml
-- Run py.test and save results as a jUnit report to /tmp/pytest.xml
-- Run ServerSpec and save results as a jUnit report to /tmp/serverspec.sml
-- Downloads jUnit reports into Jenkins job folder
-- Terminate an Amazon EC2 instance
+- Run arbitrary commands like adding Grains (Eg: sudeo salt-call grains.append roles apache)
+- Run Hightstate and save results as a jUnit report workspace/highstate.xml
+- Run Py.Test and save results as a jUnit report to workspace/pytest.xml
+- Run ServerSpec and save results as a jUnit report to workspace/serverspec.sml
+- Terminate Amazon EC2 instance
 
 
-Salt-tester requires some work
-------------------------------
+Salt-tester requires some work in your Salt States repo
+-------------------------------------------------------
 
 *Minion config for testing*
 - Minion conf file to use for testing is located in your Salt repo in a specified dir (Eg: tests/configs/minion)
