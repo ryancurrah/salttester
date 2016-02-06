@@ -5,7 +5,21 @@ salt-tester
 Description
 -----------
 
-SaltStack test runner for Py.Test, Highstate and ServerSpec tests for AWS EC2 and reports results in jUnit
+SaltStack test executor for Amazon EC2 that has multiple test runner that report results back in jUnit
+
+
+Salt-tester test runners
+------------------------
+
+1. highstate
+2. py.test
+3. serverspec
+
+
+Salt-tester runs on the following operating systems
+----------------------------------------------------
+
+1. Ubuntu
 
 
 Salt-tester does the following
@@ -35,12 +49,6 @@ Salt-tester requires some work
 
 *jUnit Salt Outputter*
 - Include a custom jUnit outputter in your salt states _outputter dir (https://github.com/ryancurrah/salt-ci-demo/blob/master/states/_output/junit.py) 
-
-
-Salt-tester supports the following operating systems
-----------------------------------------------------
-
-1. Ubuntu
 
 
 Jenkins plugins required
