@@ -1,14 +1,15 @@
 salt-tester
 ===========
 
+
 Description
 -----------
 
-SaltStack Test Runner for Py.Test, Highstate and ServerSpec tests Using AWS EC2 and Jenkins with reports in jUnit.
+SaltStack test runner for Py.Test, Highstate and ServerSpec tests for AWS EC2 and reports results in jUnit
 
 
-This app does the following
----------------------------
+Salt-tester does the following
+------------------------------
 
 - Deploy an Amazon EC2 instance
 - Install Salt Minion in standalone/masterless mode
@@ -20,18 +21,102 @@ This app does the following
 - Terminate an Amazon EC2 instance
 
 
-This app requires
------------------
+Salt-tester requires some work
+------------------------------
 
-1. Running the salttester app from a Linux Jenkins server with this plugin installed
-2. Jenkins server has the jUnit plugin installed
-3. Amazon EC2 credential is injected by Jenkins as env variables (http://boto3.readthedocs.org/en/latest/guide/configuration.html#environment-variables) 
-4. Minion conf file that specifies the following (See example config below)
+*Minion config for testing*
+- Minion conf file to use for testing is located in your Salt repo in a specified dir (Eg: tests/configs/minion)
+- Minion conf specifies the following (See example config below)
     a. Set file_client to 'local'
-    b. Set up local file_roots and pillar_roots to your git repo clone directory
-5. A minion conf file to use for testing is located in your Salt repo in the tests dir (Eg: tests/configs/minion)
-6. ServerSpec spec_helper.rb file imports the yarjuf library to allow for jUnit output (https://github.com/natritmeyer/yarjuf)
-7. Include a custom jUnit outputter in your salt states (https://github.com/ryancurrah/salt-ci-demo/blob/master/states/_output/junit.py) 
+    b. Set up local file_roots and pillar_roots to a local directory
+
+*ServerSpec spec_helper settings*
+- ServerSpec spec_helper.rb file imports the yarjuf library to allow for jUnit output (https://github.com/natritmeyer/yarjuf)
+
+*jUnit Salt Outputter*
+- Include a custom jUnit outputter in your salt states _outputter dir (https://github.com/ryancurrah/salt-ci-demo/blob/master/states/_output/junit.py) 
+
+
+Salt-tester supports the following operating systems
+----------------------------------------------------
+
+1. Ubuntu
+
+
+Jenkins plugins required
+------------------------
+
+1. Git plugin
+2. Environment Injector Plugin
+3. JUnit Plugin
+4. ShiningPanda Plugin
+
+
+Jenkins setup
+-------------
+
+1. Source Code Management > Git > Repository URL
+
+```
+https://github.com/ryancurrah/salt-ci-demo.git
+```
+
+2. Source Code Management > Git > Branches to build
+
+```
+*/master
+```
+
+3. Build Environment > Properties Content
+
+```
+SALTTESTER_VER=0.4.0
+AWS_DEFAULT_REGION=us-east-1
+```
+
+4. Build Environment > Inject passwords to the build as environment variables 
+
+```
+AWS_ACCESS_KEY_ID=<access_key_id>
+AWS_SECRET_ACCESS_KEY=<secret_access_key>
+```
+
+5. Build > Virtualenv builder > Python version
+
+```
+System-CPython2.7
+```
+
+6. Build > Virtualenv builder > Nature
+
+```
+Shell
+```
+
+7. Build > Virtualenv builder > Command
+
+```
+# Install the salttester app
+pip install https://github.com/ryancurrah/salttester/blob/master/dist/salttester-$SALTTESTER_VER.tar.gz?raw=true
+# Start the instance deployment (synchronous)
+salttester -b $BUILD_ID -o ubuntu deploy --image-id ami-d05e75b8 --instance-type t2.micro --keyname tester --git-repo https://github.com/ryancurrah/salt-ci-demo.git --git-branch master --salt-dir /srv/salt --minion-conf /srv/salt/tests/configs/minion --subnet-id subnet-8u447f3 --security-group-ids sg-56b67u
+# Run command to set role grain
+salttester -b $BUILD_ID -o ubuntu remote --port 22 --username ubuntu --key-filename /var/jenkins_home/tester.pem cmd --cmd "sudo salt-call grains.setval app realcost"
+# Run py.test
+salttester -b $BUILD_ID -o ubuntu remote --port 22 --username ubuntu --key-filename /var/jenkins_home/tester.pem pytest --pytest-test-dir /srv/salt/tests/pytest
+# Start highstate
+salttester -b $BUILD_ID -o ubuntu remote --port 22 --username ubuntu --key-filename /var/jenkins_home/tester.pem highstate
+# Run serverspec
+salttester -b $BUILD_ID -o ubuntu remote --port 22 --username ubuntu --key-filename /var/jenkins_home/tester.pem serverspec --serverspec-test-dir /srv/salt/tests/serverspec/linux
+# Terminate instance
+salttester -b $BUILD_ID -o ubuntu terminate
+```
+
+8. Post-build Actions > Publish JUnit test result report > Test report XMLs
+
+```
+*.xml
+```
 
 
 Example local/masterless minion config
@@ -45,4 +130,51 @@ file_roots:
 pillar_roots:
   base:
     - /srv/salt/pillar
+```
+
+
+Example serverspec spec_helper file
+-----------------------------------
+
+```
+require 'serverspec'
+require 'yarjuf'
+require 'yaml'
+
+set :backend, :exec
+
+properties = YAML.load_file('/etc/salt/grains')
+
+set_property properties
+```
+
+
+Example pytest lowstate render test
+-----------------------------------
+
+```
+import salt.client
+caller = salt.client.Caller()
+
+
+def test_lowstate_render():
+    r = caller.cmd('state.show_lowstate')
+    assert isinstance(r, list)
+    assert len(r) > 0
+```
+
+
+Example pytest pillar render test
+---------------------------------
+
+```
+import salt.client
+caller = salt.client.Caller()
+
+
+def test_pillar_render():
+    r = caller.cmd('pillar.items')
+    print r
+    assert isinstance(r, dict)
+    assert '_errors' not in r
 ```
